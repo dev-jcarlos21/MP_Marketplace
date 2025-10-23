@@ -1,0 +1,20 @@
+[
+    {
+        "order_id": "O-1001",
+        "seller_id": "S-001",
+        "items": [
+                    {"sku": "SKU-001", "quantity": 2, "discount": 0.10},
+                    {"sku": "SKU-002", "quantity": 1, "discount": 0.00}
+                 ],
+        "tax_rate": 0.16
+    },
+    {
+    "order_id": "O-1002",
+    "seller_id": "S-002",
+    "items": [
+                {"sku": "SKU-003", "quantity": 1, "discount": 0.05},
+                {"sku": "SKU-005", "quantity": 2, "discount": 0.00}
+             ],
+    "tax_rate": 0.16
+    }
+]

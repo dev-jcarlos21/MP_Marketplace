@@ -1,0 +1,6 @@
+sku,name,category,price,stock
+SKU-001,Mouse óptico,Periféricos,199.90,50
+SKU-002,Teclado mecánico,Periféricos,1299.00,15
+SKU-003,Monitor 24",Monitores,2899.50,10
+SKU-004,Auriculares gamer,Audio,799.99,0
+SKU-005,Webcam 1080p,Cámaras,649.00,25
