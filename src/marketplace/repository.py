@@ -1,4 +1,5 @@
 from __future__ import annotations
+from loguru import logger
 
 import csv
 import json
@@ -34,7 +35,9 @@ class InMemoryRepo:
 
                     # Validación para evitar SKUs duplicados
                     if producto.sku in self.products:
-                        print(f"Advertencia línea {line_number}: SKU duplicado '{producto.sku}'")
+                        logger.warning(
+                            f"Advertencia línea {line_number}: SKU duplicado {producto.sku}"
+                        )
                         continue
 
                     # Guarda en el diccionario usando el sku como clave
@@ -43,8 +46,8 @@ class InMemoryRepo:
 
                 # Validacion en caso de error
                 except Exception as e:
-                    print(f"Error inesperado en línea {line_number}: {type(e).__name__}: {e}")
-                    print(f"Datos de la fila: {fila}")
+                    logger.error(f"Error inesperado en línea {line_number}: {type(e).__name__}: {e}")
+                    logger.erro(f"Datos de la fila: {fila}")
 
         # Devuelve cuántos productos fueron cargados
         return count
@@ -59,7 +62,7 @@ class InMemoryRepo:
             with open(path, encoding="utf-8") as file:
                 data = json.load(file)
         except Exception as e:
-            print(f"Error al leer el archivo JSON: {e}")
+            logger.error(f"Error al leer el archivo JSON: {e}")
             return 0
 
         for index, item in enumerate(data, start=1):
@@ -69,14 +72,16 @@ class InMemoryRepo:
 
                 # Validacion de duplicados
                 if seller.seller_id in self.sellers:
-                    print(f"Advertencia línea {index}: Seller duplicado '{seller.seller_id}'")
+                    logger.warning(
+                        f"Advertencia línea {index}: Seller duplicado '{seller.seller_id}'"
+                    )
                     continue
                 self.sellers[seller.seller_id] = seller
                 count += 1
             except Exception as e:
                 error_count += 1
-                print(f"Error en item {index}: {type(e).__name__} - {e}")
-                print(f"Datos problemáticos: {item}")
+                logger.error(f"Error en item {index}: {type(e).__name__} - {e}")
+                logger.error(f"Datos problemáticos: {item}")
         # Devuelve cantidad de sellers cargados
         return count
 
@@ -90,7 +95,7 @@ class InMemoryRepo:
             with open(path, encoding="utf-8") as file:
                 data = json.load(file)
         except Exception as e:
-            print(f"Error al leer el archivo JSON: {e}")
+            logger.error(f"Error al leer el archivo JSON: {e}")
             return 0
 
         for index, item in enumerate(data, start=1):
@@ -101,14 +106,14 @@ class InMemoryRepo:
 
                 # Validacion de duplicados
                 if order.order_id in self.orders:
-                    print(f"Advertencia línea {index}: Seller duplicado '{order.order_id}'")
+                    logger.warning(f"Advertencia línea {index}: Seller duplicado '{order.order_id}'")
                     continue
                 self.orders[order.order_id] = order
                 count += 1
             except Exception as e:
                 error_count += 1
-                print(f"Error en item {index}: {type(e).__name__} - {e}")
-                print(f"Datos problemáticos: {item}")
+                logger.error(f"Error en item {index}: {type(e).__name__} - {e}")
+                logger.error(f"Datos con conflictos: {item}")
         # Devuelve cantidad de sellers cargados
         return count
 
@@ -118,7 +123,7 @@ class InMemoryRepo:
 
         # Validacion de existencia de producto
         if producto is None:
-            print(f"Producto no encontrado: {sku}")
+            lo(f"Producto no encontrado: {sku}")
             return None
 
         return producto

@@ -3,9 +3,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import typer
+
 from .logic import compute_order_totals, top_seller_by_revenue
 from .repository import InMemoryRepo
+from loguru import logger
 
+app = typer.Typer()
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CLI Marketplace (local, sin API)")
@@ -31,19 +35,19 @@ def main() -> int:
     repo.load_orders_json(args.orders)
 
     if args.task == "validate":
-        print(
+        logger.success(
             f"Productos: {len(repo.products)} "
             f"| Sellers: {len(repo.sellers)} "
             f"| Órdenes: {len(repo.orders)}"
         )
         oos = repo.out_of_stock()
-        print(f"Agotados: {len(oos)}")
+        logger.warning(f"Agotados: {len(oos)}")
         return 0
 
     if args.task == "totals":
         for order in repo.orders.values():
             totals = compute_order_totals(order, repo)
-            print(
+            logger.success(
                 f"{order.order_id}: subtotal={totals['subtotal']:.2f} "
                 f"tax={totals['tax']:.2f} total={totals['total']:.2f}"
             )
@@ -52,10 +56,10 @@ def main() -> int:
     if args.task == "top-seller":
         result = top_seller_by_revenue(repo.orders.values(), repo)
         if result is None:
-            print("Sin datos")
+            logger.warning("Sin datos")
         else:
             seller_id, revenue = result
-            print(f"TOP vendedor: {seller_id} con ${revenue:.2f}")
+            logger.success(f"TOP vendedor: {seller_id} con ${revenue:.2f}")
             return 0
     return 0
 
