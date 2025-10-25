@@ -4,17 +4,18 @@ import argparse
 from pathlib import Path
 
 import typer
+from loguru import logger
 
 from .logic import compute_order_totals, top_seller_by_revenue
 from .repository import InMemoryRepo
-from loguru import logger
+from .settings import settings
 
 app = typer.Typer()
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CLI Marketplace (local, sin API)")
     parser.add_argument(
-        "--products", type=Path, default=Path("/opt/marketplace-mini/data/productos.csv")
+        "--products", type=Path, default=settings.PRODUCTS_PATH
     )
     parser.add_argument(
         "--sellers", type=Path, default=Path("/opt/marketplace-mini/data/sellers.json")

@@ -1,9 +1,10 @@
 from __future__ import annotations
-from loguru import logger
 
 import csv
 import json
 from pathlib import Path
+
+from loguru import logger
 
 from .models import Order, Product, Seller
 
@@ -46,7 +47,7 @@ class InMemoryRepo:
 
                 # Validacion en caso de error
                 except Exception as e:
-                    logger.error(f"Error inesperado en línea {line_number}: {type(e).__name__}: {e}")
+                    logger.error(f"Error en línea {line_number}: {type(e).__name__}: {e}")
                     logger.erro(f"Datos de la fila: {fila}")
 
         # Devuelve cuántos productos fueron cargados
@@ -106,7 +107,7 @@ class InMemoryRepo:
 
                 # Validacion de duplicados
                 if order.order_id in self.orders:
-                    logger.warning(f"Advertencia línea {index}: Seller duplicado '{order.order_id}'")
+                    logger.warning(f"Advertencia línea {index}: Seller duplicado {order.order_id}")
                     continue
                 self.orders[order.order_id] = order
                 count += 1
@@ -123,7 +124,7 @@ class InMemoryRepo:
 
         # Validacion de existencia de producto
         if producto is None:
-            lo(f"Producto no encontrado: {sku}")
+            logger.warning(f"Producto no encontrado: {sku}")
             return None
 
         return producto
