@@ -10,8 +10,10 @@ from .logic import compute_order_totals, top_seller_by_revenue
 from .repository import InMemoryRepo
 from .settings import settings
 
-app = typer.Typer(help="CLI Marketplace (local, sin API)")
-
+app = typer.Typer(
+    help="""CLI Marketplace (local, sin API)
+    Ejemplo de ejecucion: comando + argumentos (productos sellers orders)"""
+)
 
 # def build_parser() -> argparse.ArgumentParser:
  # parser = argparse.ArgumentParser(description="CLI Marketplace (local, sin API)", add_help=False)
