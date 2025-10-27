@@ -8,8 +8,7 @@ from loguru import logger
 
 from .logic import compute_order_totals, top_seller_by_revenue
 from .repository import InMemoryRepo
-
-# from .settings import settings
+from .settings import settings
 
 app = typer.Typer(help="CLI Marketplace (local, sin API)")
 
@@ -30,8 +29,15 @@ app = typer.Typer(help="CLI Marketplace (local, sin API)")
     # )
     # return parser
 
+# Funcion para cargar los datos desde los archivos
 def load_repository(products: str, sellers: str, orders: str) -> InMemoryRepo:
     repo = InMemoryRepo()
+    if products == "products":
+        products = Path(settings.PRODUCTS_PATH)
+    if sellers == "sellers":
+        sellers = Path(settings.SELLERS_PATH)
+    if orders == "orders":
+        orders = Path(settings.ORDERS_PATH)
     repo.load_products_csv(products)
     repo.load_sellers_json(sellers)
     repo.load_orders_json(orders)
