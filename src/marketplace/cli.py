@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from pydoc import cli
 
 import typer
 from loguru import logger
@@ -10,18 +11,19 @@ from .logic import compute_order_totals, top_seller_by_revenue
 from .repository import InMemoryRepo
 from .settings import settings
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False, no_args_is_help=True)
+
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="CLI Marketplace (local, sin API)")
+    parser = argparse.ArgumentParser(description="CLI Marketplace (local, sin API)", add_help=False)
     parser.add_argument(
         "--products", type=Path, default=settings.PRODUCTS_PATH
     )
     parser.add_argument(
-        "--sellers", type=Path, default=Path("/opt/marketplace-mini/data/sellers.json")
+        "--sellers", type=Path, default=settings.SELLERS_PATH
     )
     parser.add_argument(
-        "--orders", type=Path, default=Path("/opt/marketplace-mini/data/orders.json")
+        "--orders", type=Path, default=settings.ORDERS_PATH
     )
     parser.add_argument(
         "--task", choices=["validate", "totals", "top-seller"], default="validate"
