@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import operator
 from collections.abc import Iterable
 
 from .models import Order, OrderTotals, Product
@@ -43,7 +44,9 @@ def compute_order_totals(order: Order, repo: InMemoryRepo) -> OrderTotals:
     )
 
 
-def top_seller_by_revenue(orders: Iterable[Order], repo: InMemoryRepo) -> tuple[str, float] | None:
+def top_seller_by_revenue(
+    orders: Iterable[Order], repo: InMemoryRepo
+) -> tuple[str, float] | None:
     """
     Retorna (seller_id, revenue_total) del vendedor con más ingresos.
     - Usa compute_order_totals para cada orden.
@@ -65,5 +68,5 @@ def top_seller_by_revenue(orders: Iterable[Order], repo: InMemoryRepo) -> tuple[
         return None
 
     # Encuentra el seller con mayor revenue
-    top_seller = max(seller_revenues.items(), key=lambda x: x[1])
+    top_seller = max(seller_revenues.items(), key=operator.itemgetter(1))
     return top_seller

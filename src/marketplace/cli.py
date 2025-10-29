@@ -1,59 +1,75 @@
 from __future__ import annotations
 
 # import argparse
-from pathlib import Path
+from typing import Any
 
 import typer
 from loguru import logger
 
-from .logic import compute_order_totals, top_seller_by_revenue
-from .repository import InMemoryRepo
-from .settings import settings
+from marketplace.logic import compute_order_totals, top_seller_by_revenue
+from marketplace.repository import InMemoryRepo
+from marketplace.settings import settings
 
 app = typer.Typer(
     help="""CLI Marketplace (local, sin API)
-    Ejemplo de ejecucion: comando + argumentos (productos sellers orders)"""
+    Ejemplo de ejecucion: comando + argumentos (productos sellers orders)""",
 )
+
+
+def lazy_load_func() -> Any:
+    """Carga el módulo únicamente al ejecutar un comando."""
+    import marketplace.services as services
+
+    return services
+
+
+@app.command()
+def init_db():
+    """Inicializa tablas en DB."""
+    marketplace = lazy_load_func()
+    marketplace.init_db()
+
 
 # Funcion para cargar los datos desde los archivos
 def load_repository(products: str, sellers: str, orders: str) -> InMemoryRepo:
     repo = InMemoryRepo()
     if products == "products":
-        products = Path(settings.PRODUCTS_PATH)
+        repo.load_products_csv(settings.PRODUCTS_PATH)
     if sellers == "sellers":
-        sellers = Path(settings.SELLERS_PATH)
+        repo.load_sellers_json(settings.SELLERS_PATH)
     if orders == "orders":
-        orders = Path(settings.ORDERS_PATH)
-    repo.load_products_csv(products)
-    repo.load_sellers_json(sellers)
-    repo.load_orders_json(orders)
+        repo.load_orders_json(settings.ORDERS_PATH)
     return repo
 
+
 @app.command()
-def validate (products: str, sellers: str, orders: str) -> int:
+def validate(products: str, sellers: str, orders: str) -> int:
     repo = load_repository(products, sellers, orders)
     logger.success(
         f"Productos: {len(repo.products)} "
         f"| Sellers: {len(repo.sellers)} "
-        f"| Órdenes: {len(repo.orders)}"
+        f"| Órdenes: {len(repo.orders)}",
     )
     oos = repo.out_of_stock()
     logger.warning(f"Agotados: {len(oos)}")
     return 0
 
-@app.command()
-def totals (products: str, sellers: str, orders: str) -> int:
-    repo = load_repository(products, sellers, orders)
-    for order in repo.orders.values():
-        totals = compute_order_totals(order, repo)
-        logger.success(
-            f"{order.order_id}: subtotal={totals['subtotal']:.2f} "
-            f"tax={totals['tax']:.2f} total={totals['total']:.2f}"
-        )
-        return 0
 
 @app.command()
-def top_seller (products: str, sellers: str, orders: str) -> int:
+def totals(products: str, sellers: str, orders: str) -> int:
+    repo = load_repository(products, sellers, orders)
+    for order in repo.orders.values():
+        totals_product = compute_order_totals(order, repo)
+        logger.success(
+            f"{order.order_id}: subtotal={totals_product['subtotal']:.2f} "
+            f"tax={totals_product['tax']:.2f} total={totals_product['total']:.2f}",
+        )
+        return 0
+    return 0
+
+
+@app.command()
+def top_seller(products: str, sellers: str, orders: str) -> int:
     repo = load_repository(products, sellers, orders)
     result = top_seller_by_revenue(repo.orders.values(), repo)
     if result is None:
@@ -66,8 +82,10 @@ def top_seller (products: str, sellers: str, orders: str) -> int:
     logger.warning(f"Agotados: {len(oos)}")
     return 0
 
-def main() -> None:
+
+def main():
     app()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -5,8 +5,12 @@ from marketplace.repository import InMemoryRepo
 
 def make_repo() -> InMemoryRepo:
     repo = InMemoryRepo()
-    repo.products["SKU-001"] = Product(sku="SKU-001", name="X", category="C", price=100.0, stock=5)
-    repo.products["SKU-002"] = Product(sku="SKU-002", name="Y", category="C", price=50.0, stock=0)
+    repo.products["SKU-001"] = Product(
+        sku="SKU-001", name="X", category="C", price=100.0, stock=5
+    )
+    repo.products["SKU-002"] = Product(
+        sku="SKU-002", name="Y", category="C", price=50.0, stock=0
+    )
     repo.sellers["S-1"] = Seller(seller_id="S-1", display_name="Demo", rating=4.0)
     return repo
 
