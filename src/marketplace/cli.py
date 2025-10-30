@@ -18,7 +18,7 @@ app = typer.Typer(
 
 def lazy_load_func() -> Any:
     """Carga el módulo únicamente al ejecutar un comando."""
-    import marketplace.mkp_database as marketplace
+    import marketplace.service as marketplace
 
     return marketplace
 
@@ -31,10 +31,10 @@ def init_db():
 
 
 @app.command()
-def get_db():
+def get_db_marketplace():
     """Actualizacion de productos en el archivo CSV."""
     marketplace = lazy_load_func()
-    marketplace.get_db()
+    marketplace.get_db_marketplace()
 
 
 # Funcion para cargar los datos desde los archivos

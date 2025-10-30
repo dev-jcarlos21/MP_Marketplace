@@ -3,7 +3,7 @@ from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from marketplace.orm import Base
+from marketplace.database import init_db
 from marketplace.settings import settings
 from utils.safe_db import SafeDB
 
@@ -13,12 +13,12 @@ db = SessionLocal()
 helpers = SafeDB(db)
 
 
-def init_db():
-    Base.metadata.create_all(bind=engine)
-    logger.info("base de datos inicializada")
+def init_db_marketplace():
+    """Inicializa tablas en DB."""
+    init_db()
 
 
-def get_db():
+def get_db_marketplace():
     sql = """
         SELECT sku,
                name,
