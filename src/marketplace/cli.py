@@ -27,7 +27,7 @@ def lazy_load_func() -> Any:
 def init_db():
     """Inicializa tablas en DB."""
     marketplace = lazy_load_func()
-    marketplace.init_db()
+    marketplace.init_db_marketplace()
 
 
 @app.command()
