@@ -1,10 +1,8 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy import DECIMAL, Column, Integer, String
+from sqlalchemy.orm import DeclarativeBase
 
-from db import Base
 
-if TYPE_CHECKING:
+class Base(DeclarativeBase):
     pass
 
 
