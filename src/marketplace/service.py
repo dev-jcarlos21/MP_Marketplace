@@ -12,6 +12,14 @@ SessionLocal = sessionmaker(bind=engine)
 db = SessionLocal()
 helpers = SafeDB(db)
 
+FIELDS = [
+    "sku",
+    "name",
+    "category",
+    "price",
+    "stock",
+]
+
 
 def init_db_marketplace():
     """Inicializa tablas en DB."""
@@ -29,8 +37,7 @@ def get_db_marketplace():
     """
     try:
         res = helpers.safe_execute(sql)
-        rows = res.fetchall()
-        csv_file = pd.DataFrame(rows)
+        csv_file = pd.DataFrame(res.all())
         csv_file.to_csv(settings.PRODUCTS_PATH, header=True, index=False)
         logger.info(
             f"""Productos cargados: {csv_file}
